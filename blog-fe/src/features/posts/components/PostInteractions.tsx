@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Heart, MessageCircle, Flag, Bookmark } from 'lucide-react';
-import { useLikePost, useBookmarkPost } from '../hooks/usePostInteractions';
+import { Heart, MessageCircle, Flag, Bookmark, Share2 } from 'lucide-react';
+import { useLikePost, useBookmarkPost, useSharePost } from '../hooks/usePostInteractions';
 import { CommentSection } from './CommentSection';
 import { ReportModal } from './ReportModal';
 import { useAuthStore } from '@/features/auth/store/authStore';
@@ -27,6 +27,7 @@ export function PostInteractions({
 }: PostInteractionsProps) {
   const { mutate: toggleLike, isPending: isLiking } = useLikePost(postId);
   const { mutate: toggleBookmark, isPending: isBookmarking } = useBookmarkPost(postId);
+  const { mutate: sharePost, isPending: isSharing } = useSharePost(postId);
   
   // Use local state for immediate feedback, but sync with props
   const [isLiked, setIsLiked] = useState(initialLiked);
@@ -92,6 +93,16 @@ export function PostInteractions({
     });
   };
 
+  const handleShare = () => {
+    if (isSharing) return;
+    sharePost({ platform: 'COPY_LINK' }, {
+      onSuccess: () => {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    });
+  };
+
   return (
     <>
       {/* Interaction Bar */}
@@ -145,6 +156,18 @@ export function PostInteractions({
         >
           <MessageCircle size={16} className="group-hover:scale-110 transition-transform" />
           <span>{showComments ? 'Hide' : commentCount > 0 ? `${commentCount} Comments` : 'Comments'}</span>
+        </button>
+
+        {/* Share toggle */}
+        <button
+          id="share-button"
+          onClick={handleShare}
+          disabled={isSharing}
+          className={`group flex items-center gap-2 px-4 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest transition-all bg-card-bg/60 text-muted-foreground hover:text-blue-500 hover:bg-blue-500/10 border border-card-border`}
+          title="Share post"
+        >
+          <Share2 size={16} className="group-hover:scale-110 transition-transform" />
+          <span className="hidden sm:inline">Share</span>
         </button>
 
         {/* Spacer */}
