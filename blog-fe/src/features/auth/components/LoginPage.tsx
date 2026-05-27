@@ -171,11 +171,11 @@ export default function LoginPage() {
                 </div>
 
                 <div className={styles.socialButtons}>
-                  <Button variant="outline" className={styles.socialBtn}>
+                  <Button variant="outline" className={styles.socialBtn} onClick={() => window.location.href = '/memorizz-api/auth/google'}>
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width={18} alt="Google" />
                     <span>Continue with Google</span>
                   </Button>
-                  <Button variant="outline" className={styles.socialBtn}>
+                  <Button variant="outline" className={styles.socialBtn} onClick={() => window.location.href = '/memorizz-api/auth/github'}>
                     <GithubIcon size={18} />
                     <span>Continue with GitHub</span>
                   </Button>

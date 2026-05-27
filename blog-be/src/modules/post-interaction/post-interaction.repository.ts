@@ -26,7 +26,7 @@ type CommentRecord = {
 };
 
 export class PrismaPostInteractionRepository {
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) { }
 
   async findPostDetailById(postId: string, userId: string): Promise<PostDetailResponse> {
     const post = await this.prisma.post.findUnique({
