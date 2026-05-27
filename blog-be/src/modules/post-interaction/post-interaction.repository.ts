@@ -365,12 +365,24 @@ export class PrismaPostInteractionRepository {
           updatedBy: userId,
         },
       }),
-      this.prisma.userInteraction.create({
-        data: {
+      this.prisma.userInteraction.upsert({
+        where: {
+          userId_postId_type: {
+            userId,
+            postId,
+            type: InteractionType.SHARE,
+          },
+        },
+        create: {
           userId,
           postId,
           type: InteractionType.SHARE,
           createdBy: userId,
+          updatedBy: userId,
+        },
+        update: {
+          isDeleted: false,
+          isActive: true,
           updatedBy: userId,
         },
       }),
@@ -445,13 +457,26 @@ export class PrismaPostInteractionRepository {
           },
         },
       }),
-      this.prisma.userInteraction.create({
-        data: {
+      this.prisma.userInteraction.upsert({
+        where: {
+          userId_postId_type: {
+            userId,
+            postId,
+            type: InteractionType.COMMENT,
+          },
+        },
+        create: {
           userId,
           postId,
           type: InteractionType.COMMENT,
-          targetId: parentId, // Store parent comment ID if it's a reply
+          targetId: parentId,
           createdBy: userId,
+          updatedBy: userId,
+        },
+        update: {
+          targetId: parentId,
+          isDeleted: false,
+          isActive: true,
           updatedBy: userId,
         },
       }),
