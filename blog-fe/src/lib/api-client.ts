@@ -10,6 +10,18 @@ export const apiClient = axios.create({
 
 // Helper to check if a route is public
 const isPublicRoute = (url: string = '') => {
+  // Normalize URL to a relative pathname
+  let path = url;
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    try {
+      const urlObj = new URL(url);
+      path = urlObj.pathname;
+    } catch (e) {}
+  }
+  
+  // Strip API base path prefixes if present
+  path = path.replace(/^\/memorizz-api/, '').replace(/^\/api/, '');
+
   const publicPaths = [
     '/signin',
     '/signup',
@@ -21,7 +33,7 @@ const isPublicRoute = (url: string = '') => {
     '/tag',
     '/search'
   ];
-  return publicPaths.some(path => url.startsWith(path));
+  return publicPaths.some(p => path.startsWith(p));
 };
 
 // Add a request interceptor to attach the JWT token
