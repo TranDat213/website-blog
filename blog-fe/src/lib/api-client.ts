@@ -14,6 +14,7 @@ const isPublicRoute = (url: string = '') => {
     '/signin',
     '/signup',
     '/post/hot',
+    '/post/',
     '/category/all',
     '/category/',
     '/tag/all',
@@ -48,11 +49,15 @@ apiClient.interceptors.response.use(
       console.error(`❌ API Error [${status}] on ${url}`);
       console.error('Data:', error.response.data);
     }
-    // Only clear session for 401 on protected routes
+    
+    // Only clear session for 401 on protected routes when a token exists
     if (status === 401 && !isPublic) {
-      console.error('🚨 Session expired or unauthorized. Clearing session...');
-      if (typeof window !== 'undefined') {
-        useAuthStore.getState().logout();
+      const token = useAuthStore.getState().token;
+      if (token) {
+        console.error('🚨 Session expired or unauthorized. Clearing session...');
+        if (typeof window !== 'undefined') {
+          useAuthStore.getState().logout();
+        }
       }
     }
     return Promise.reject(error);
