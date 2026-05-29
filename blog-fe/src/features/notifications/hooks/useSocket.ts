@@ -7,6 +7,13 @@ import { toast } from 'sonner';
 
 const getSocketUrl = () => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://memorizz-api.onrender.com/api';
+  
+  // If the API URL is a relative path (like '/memorizz-api'), we must connect the WebSocket
+  // directly to the absolute backend URL, because Vercel frontend does not support WebSocket proxying.
+  if (apiUrl.startsWith('/')) {
+    return 'https://memorizz-api.onrender.com';
+  }
+  
   return apiUrl.replace(/\/api\/?$/, '');
 };
 
@@ -101,7 +108,7 @@ export function useSocket() {
       };
 
       addNotification(feNotification);
-      
+
       // Show high-end modern rich toast
       let toastMsg = `${actorName} `;
       if (typeLower === 'like') toastMsg += 'liked your post';
