@@ -58,8 +58,13 @@ apiClient.interceptors.response.use(
 
     // Log detailed error info for debugging
     if (error.response) {
-      console.error(`❌ API Error [${status}] on ${url}`);
-      console.error('Data:', error.response.data);
+      // Avoid printing noisy red console errors for backend's missing notification endpoints
+      const isNotification404 = status === 404 && url.includes('/notification/');
+      
+      if (!isNotification404) {
+        console.error(`❌ API Error [${status}] on ${url}`);
+        console.error('Data:', error.response.data);
+      }
     }
     
     // Only clear session for 401 on protected routes when a token exists
