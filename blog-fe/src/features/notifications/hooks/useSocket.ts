@@ -19,7 +19,7 @@ const getSocketUrl = () => {
       if (window.location.hostname === 'localhost') {
         return 'http://localhost:5000';
       }
-      console.warn('⚠️ relative NEXT_PUBLIC_API_URL is used. Falling back to production backend WebSocket at memorizz-api.onrender.com');
+      // console.warn('⚠️ relative NEXT_PUBLIC_API_URL is used. Falling back to production backend WebSocket at memorizz-api.onrender.com');
     }
     return 'https://memorizz-api.onrender.com';
   }
@@ -43,7 +43,7 @@ export function useSocket() {
       return;
     }
 
-    console.log('🔌 Connecting to WebSocket at:', SOCKET_URL);
+    // console.log('🔌 Connecting to WebSocket at:', SOCKET_URL);
 
     // Initialize socket with token and userId in auth handshake
     const socket = io(SOCKET_URL, {
@@ -57,18 +57,18 @@ export function useSocket() {
     socketRef.current = socket;
 
     socket.on('connect', () => {
-      console.log('✅ Connected to WebSocket');
+      // console.log('✅ Connected to WebSocket');
       // Join a private room for the user
       socket.emit('join', user.id);
     });
 
     socket.on('disconnect', () => {
-      console.log('❌ Disconnected from WebSocket');
+      // console.log('❌ Disconnected from WebSocket');
     });
 
     // Handle notification events
     const handleNotification = (rawNotification: any) => {
-      console.log('📩 Received socket notification:', rawNotification);
+      // console.log('📩 Received socket notification:', rawNotification);
 
       // Check if notification is already in the FE format
       if (rawNotification.actor && rawNotification.post) {

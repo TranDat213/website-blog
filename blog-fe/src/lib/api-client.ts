@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { useAuthStore } from '@/features/auth/store/authStore';
+import { logger } from './logger';
+import { toast } from 'sonner';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/memorizz-api';
 
@@ -62,16 +64,15 @@ apiClient.interceptors.response.use(
       const isNotification404 = status === 404 && url.includes('/notification/');
       
       if (!isNotification404) {
-        console.error(`❌ API Error [${status}] on ${url}`);
-        console.error('Data:', error.response.data);
+        logger.error(`❌ API Error [${status}] on ${url}`, error.response.data);
       }
     }
     
-    // Only clear session for 401 on protected routes when a token exists
     if (status === 401 && !isPublic) {
       const token = useAuthStore.getState().token;
       if (token) {
-        console.error('🚨 Session expired or unauthorized. Clearing session...');
+        logger.error('🚨 Session expired or unauthorized. Clearing session...');
+        toast.error('Session expired. Please login again.');
         if (typeof window !== 'undefined') {
           useAuthStore.getState().logout();
         }
